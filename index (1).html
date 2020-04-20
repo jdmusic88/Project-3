@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>How Has Energy Consumption Changed Overtime?</title>
+  <style>
+    body {background-color: navy;}
+  </style>
+​  <!--<link rel="stylesheet" type="text/css" href="templates/style.css">-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.chart/latest/tui-chart.css">
+  <script src="https://uicdn.toast.com/tui.chart/latest/tui-chart-all.js"></script>   
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <script src="static/js/d3.js"></script>
+  <script src="static/js/plotly-latest.min.js"></script>
+</head>
+<body>
+  <script>
+    var residential = {{residential | tojson}};
+    var commercial = {{commercial | tojson}};
+    var industrial = {{industrial | tojson}};
+    var transportation = {{transportation | tojson}};
+    var total_consumption = {{total_consumption | tojson}};
+    var state_sources = {{state_sources | tojson}};
+    var us_sources = {{us_sources | tojson}};
+  </script>
+
+<div class="container">
+  <div class="row"><!--this tag begins the first row-->
+    <div class="col-md-12 jumbotron text-center">
+      <h1 style="color:rgb(255,0,0);"> How Has Energy Consumption Changed Overtime?</h1>
+      <p> By: Allyson Talyor, Luke Ellison, and James Martin</p>
+      <p align="center">
+        <img width="800" height="350"
+        <img src="https://i.pinimg.com/originals/49/9f/b5/499fb5beeedb60842bbe68b5263601bc.png" atl='image'>
+      <p> 
+      <p style="color:rgb(4, 0, 255);"> Purpose of Project</p>
+      <p align="center-page">
+        In this project we will be analyzing energy consumption data between the dates of 1960-2017 in the United States. We will look into how the prevalence of different energy sources (i.e. coal and hydroelectric) has changed over time and the usage of these energy sources by state.
+      </p>
+    </div>
+  </div><!--this tag end the first row-->
+  <div class="row"><!--this tag begins the second row-->
+    <div class="col-md-4"><!--this tag takes up 1/3 of second row-->
+      <div class="well">
+        <h5>Year:</h5>
+        <select id="selDataset" onchange="getData(this.value)">
+          <option value="0000">Select Year</option> 
+            <option value="1960">1960</option>
+            <option value="1961">1961</option>
+            <option value="1962">1962</option>
+            <option value="1963">1963</option>
+            <option value="1964">1964</option>
+            <option value="1965">1965</option>
+            <option value="1966">1966</option>
+            <option value="1967">1967</option>
+            <option value="1968">1968</option>
+            <option value="1969">1969</option>
+            <option value="1970">1970</option>
+            <option value="1971">1971</option>
+            <option value="1972">1972</option>
+            <option value="1973">1973</option>
+            <option value="1974">1974</option>
+            <option value="1975">1975</option>
+            <option value="1976">1976</option>
+            <option value="1977">1977</option>
+            <option value="1978">1978</option>
+            <option value="1979">1979</option>
+            <option value="1980">1980</option>
+            <option value="1981">1981</option>
+            <option value="1982">1982</option>
+            <option value="1983">1983</option>
+            <option value="1984">1984</option>
+            <option value="1985">1985</option>
+            <option value="1986">1986</option>
+            <option value="1987">1987</option>
+            <option value="1988">1988</option>
+            <option value="1989">1989</option>
+            <option value="1990">1990</option>
+            <option value="1991">1991</option>
+            <option value="1992">1992</option>
+            <option value="1993">1993</option>
+            <option value="1994">1994</option>
+            <option value="1995">1995</option>
+            <option value="1996">1996</option>
+            <option value="1997">1997</option>
+            <option value="1998">1998</option>
+            <option value="1999">1999</option>
+            <option value="2000">2000</option>
+            <option value="2001">2001</option>
+            <option value="2002">2002</option>
+            <option value="2003">2003</option>
+            <option value="2004">2004</option>
+            <option value="2005">2005</option>
+            <option value="2006">2006</option>
+            <option value="2007">2007</option>
+            <option value="2008">2008</option>
+            <option value="2009">2009</option>
+            <option value="2010">2010</option>
+            <option value="2011">2011</option>
+            <option value="2012">2012</option>
+            <option value="2013">2013</option>
+            <option value="2014">2014</option>
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+        </select>
+      </div>
+  </div><!--this tag closes the second row-->
+  <div class="row"><!--this tag begins the third row-->
+    <div class="col-md-12"><!--this tag takes up the whole row and contains plot-->
+      <div id="bar" class="js-plotly-plot"></div>
+    </div><!--this tag ends the plot holder -->
+  </div><!--this tag ends the third row-->
+  
+  <div class="row"><!--this tag begins the fifth row-->
+    <div class="col-md-4"><!--this tag takes up 1/3 of fifth row-->
+      <div class="well">
+        <h5>State:</h5>
+        <select id="selDataset2" onchange="getData2(this.value)">
+          <option value=100>Select</option>
+          <option value=528>US</option>
+          <option value=0>AK</option>
+          <option value=12>AL</option>
+          <option value=24>AR</option>
+          <option value=36>AZ</option>
+          <option value=48>CA</option>
+          <option value=60>CO</option>
+          <option value=72>CT</option>
+          <option value=84>DC</option>
+          <option value=96>DE</option>
+          <option value=108>FL</option>
+          <option value=120>GA</option>
+          <option value=132>HI</option>
+          <option value=144>IA</option>
+          <option value=156>ID</option>
+          <option value=168>IL</option>
+          <option value=180>IN</option>
+          <option value=192>KS</option>
+          <option value=204>KY</option>
+          <option value=216>LA</option>
+          <option value=228>MA</option>
+          <option value=240>MD</option>
+          <option value=252>ME</option>
+          <option value=264>MI</option>
+          <option value=276>MN</option>
+          <option value=288>MO</option>
+          <option value=300>MS</option>
+          <option value=312>MT</option>
+          <option value=324>NC</option>
+          <option value=336>ND</option>
+          <option value=348>NE</option>
+          <option value=360>NH</option>
+          <option value=372>NJ</option>
+          <option value=384>NM</option>
+          <option value=396>NV</option>
+          <option value=408>NY</option>
+          <option value=420>OH</option>
+          <option value=432>OK</option>
+          <option value=444>OR</option>
+          <option value=456>PA</option>
+          <option value=468>RI</option>
+          <option value=480>SC</option>
+          <option value=492>SD</option>
+          <option value=504>TN</option>
+          <option value=516>TX</option>
+          <option value=540>UT</option>
+          <option value=552>VA</option>
+          <option value=564>VT</option>
+          <option value=576>WA</option>
+          <option value=588>WI</option>
+          <option value=600>WV</option>
+          <option value=612>WY</option>
+        </select>
+      </div>
+    </div><!--this tag ends the 1/3 portion of the fifth row-->
+  </div><!--this tag closes the fifth row-->
+  <div class="row"><!--this tag begins the sixth row and will-->
+    <div class="col-md-12">
+      <div id="line"></div>
+    </div>
+  </div><!--this tag closes the sixth row-->
+  <div class="row"><!--this tag begins the fourth row and will hold the horizontal bar plot-->
+    <div class="col-md-12">
+      <div id="line2"></div>
+    </div>
+  </div><!--this tag closes the fourth row-->
+
+  
+  
+  <div class="row"><!--this tag begins the seventh row-->
+    <div class="col-md-4"><!--this tag takes up 1/3 of fifth row-->
+      <div class="well">
+        <h5>Energy Type:</h5>
+        <select id="selDataset3" onchange="getData3(this.value)">
+          <option value=100>Select</option>
+          <option value="biomass">Biomass</option>
+          <option value="coal">Coal</option>
+          <option value="distillate">Distillate Fuel Oil</option>
+          <option value="hgl">HGL</option>
+          <option value="hydroelectric">Hydroelectric Power</option>
+          <option value="jet">Jet Fuel</option>
+          <option value="motor">Motor Fuel</option>
+          <option value="natural">Natural Gas</option>
+          <option value="nuclear">Nuclear Electric Power</option>
+          <option value="other_pet">Other Petroleum</option>
+          <option value="other_renewable">Other Renewables</option>
+          <option value="residual">Residual Fuel</option>
+        </select>
+      </div>
+    </div><!--this tag ends the 1/3 portion of the fifth row-->
+    <div class="col-md-8">
+      <div id="choropleth"></div>
+    </div>
+  </div><!--this tag closes the seventh row-->
+  
+
+  <div class="row"><!--this tag begins row-->
+    <div class="col-md-6"><!--this tag takes up 1/3 of fifth row-->
+      <div class="well">
+        <h5>State:</h5>
+        <select id="selDataset4" onchange="newLine(this.value)">
+          <option value=100>Select</option>
+          <option value=528>US</option>
+          <option value=0>AK</option>
+          <option value=12>AL</option>
+          <option value=24>AR</option>
+          <option value=36>AZ</option>
+          <option value=48>CA</option>
+          <option value=60>CO</option>
+          <option value=72>CT</option>
+          <option value=84>DC</option>
+          <option value=96>DE</option>
+          <option value=108>FL</option>
+          <option value=120>GA</option>
+          <option value=132>HI</option>
+          <option value=144>IA</option>
+          <option value=156>ID</option>
+          <option value=168>IL</option>
+          <option value=180>IN</option>
+          <option value=192>KS</option>
+          <option value=204>KY</option>
+          <option value=216>LA</option>
+          <option value=228>MA</option>
+          <option value=240>MD</option>
+          <option value=252>ME</option>
+          <option value=264>MI</option>
+          <option value=276>MN</option>
+          <option value=288>MO</option>
+          <option value=300>MS</option>
+          <option value=312>MT</option>
+          <option value=324>NC</option>
+          <option value=336>ND</option>
+          <option value=348>NE</option>
+          <option value=360>NH</option>
+          <option value=372>NJ</option>
+          <option value=384>NM</option>
+          <option value=396>NV</option>
+          <option value=408>NY</option>
+          <option value=420>OH</option>
+          <option value=432>OK</option>
+          <option value=444>OR</option>
+          <option value=456>PA</option>
+          <option value=468>RI</option>
+          <option value=480>SC</option>
+          <option value=492>SD</option>
+          <option value=504>TN</option>
+          <option value=516>TX</option>
+          <option value=540>UT</option>
+          <option value=552>VA</option>
+          <option value=564>VT</option>
+          <option value=576>WA</option>
+          <option value=588>WI</option>
+          <option value=600>WV</option>
+          <option value=612>WY</option>
+        </select>
+      </div>
+    </div><!--this tag ends the 1/3 portion of the fifth row-->
+  </div><!--this tag end a row-->
+  
+  <div class="row"><!--this tag begins a row-->
+    <div class="col-md-12">
+      <div id="line3"></div>
+    </div>
+  </div><!--this tag closes a row-->
+
+  
+  
+  
+
+</div> <!--this tag end the container holding all of the body-->
+<script  type="text/javascript" src="static/js/plots.js"></script>
+
+  <!--<script src="static/js/plotly-latest.min.js"></script>-->
+</body>
+</html>
+
+
